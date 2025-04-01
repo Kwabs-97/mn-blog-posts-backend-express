@@ -1,3 +1,8 @@
 import { Router } from "express";
 
-const router = new Router();
+const router = Router();
+
+router.get("/posts")
+router.post("/new-post")
+router.put("/edit")
+router.delete("/delete")
