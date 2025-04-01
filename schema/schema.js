@@ -19,9 +19,14 @@ const BpmSchema = new Schema({
     date: {
         type: Date,
         default: Date.now()
+    },
+    categories: {
+        required: true,
+        type: [String],
+        min: [1, "Select at least one category"]
     }
 })
 
 const { model } = mongoose;
-const Blog = model(BpmSchema, 'Blog');
+const Blog = model('Blogs', BpmSchema);
 export default Blog;
