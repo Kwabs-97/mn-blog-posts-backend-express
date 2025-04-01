@@ -20,3 +20,4 @@ const insertBlogs = async () => {
     }
 }
 
+await insertBlogs();
