@@ -43,6 +43,4 @@ This is the backend for the BPM application. It uses MongoDB for data storage an
 - `config/`: Contains configuration files.
 - `data/`: Stores static data like `db.json`.
 
-## Usage
-- The server will run on the default port (e.g., `http://localhost:3000`).
-- Use the provided APIs to interact with the backend.
+
