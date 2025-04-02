@@ -4,35 +4,24 @@ import fs from 'fs';
 import path from "path";
 import { fileURLToPath } from "url";
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// const filePath = path.join('__dirname', '../data', 'db.json');
-// const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const filePath = path.join('__dirname', '../data', 'db.json');
+const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
-// const posts = jsonData.posts;
+const posts = jsonData.posts;
 
 await connectDB();
-// const insertBlogs = async () => {
-//     try {
-//         const blogs = await Blog.insertMany(posts);
-//         return blogs;
-//     } catch (error) {
-//         console.log("Error inserting posts", error)
-//         throw new Error(error)
-//     }
-// }
 
-// export const allPosts = await insertBlogs();
-
-export const getAllPosts = async () => {
+const insertBlogs = async () => {
     try {
-        console.log('getting all posts')
-        const posts = await Blog.find({});
-        console.log('getting all posts -- complete')
-        return posts;
+        const blogs = await Blog.insertMany(posts);
+        return blogs;
     } catch (error) {
-        console.log("error retrieving posts", error);
-        throw new Error(error);
-
+        console.log("Error inserting posts", error)
+        throw new Error(error)
     }
 }
+
+export const allPosts = await insertBlogs();
+

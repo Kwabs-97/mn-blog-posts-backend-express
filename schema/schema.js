@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from 'uuid'; // Import the UUID function
 const { Schema } = mongoose;
+
 const BpmSchema = new Schema({
+    _id: false,
+    id: {
+        type: String,
+        required: true,
+        unique: true,
+        default: () => uuidv4() // Generate a new UUID for each document
+    },
     title: {
         required: true,
         type: String,
@@ -25,7 +34,7 @@ const BpmSchema = new Schema({
         type: [String],
         min: [1, "Select at least one category"]
     }
-})
+});
 
 const { model } = mongoose;
 const Blog = model('Blogs', BpmSchema);

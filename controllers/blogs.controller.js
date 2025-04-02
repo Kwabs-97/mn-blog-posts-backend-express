@@ -70,24 +70,25 @@ export const getPosts = async (req, res) => {
 
 // Get a specific post 
 export const getPost = async (req, res) => {
-    const { _id } = req.params;
-
-    const cacheKey = `post:${_id}`
+    const { id } = req.params;
+    console.log(id)
+    const cacheKey = `post:${id}`
     try {
         const cachedData = await redisClient.get(cacheKey);
         if (cachedData) {
             return res.status(200).json({
                 post: JSON.parse(cachedData),
-                message: `Blog with ${_id} retrieved successfully (from cache)`,
+                message: `Blog with ${id} retrieved successfully (from cache)`,
             });
         }
-        const post = await Blog.findById(_id).lean();
-         // Cache the specific post
-         await redisClient.setEx(cacheKey, 3600, JSON.stringify(post));
-        
-        return res.status(200).json({ post, message: `Blog with ${_id} retrieved successfully` })
+        const post = await Blog.findOne({ id }).lean();
+        // Cache the specific post
+        await redisClient.setEx(cacheKey, 3600, JSON.stringify(post));
+
+        return res.status(200).json({ post, message: `Blog with ${id} retrieved successfully` })
     } catch (error) {
-        return res.status(500).json({ error: "Internal server error" });
+        console.log(error)
+        return res.status(500).json({ error: "Internal server error", error });
     }
 }
 
@@ -114,55 +115,55 @@ export const createPost = async (req, res) => {
     }
 };
 
-// // Edit a post by ID
-// export const editPost = async (req, res) => {
-//     const { id } = req.params;
-//     const { title, content, author, categories } = req.body;
+// Edit a post by ID
+export const editPost = async (req, res) => {
+    const { id } = req.params;
+    const { title, content, author, categories } = req.body;
 
-//     try {
-//         const updatedPost = await Blog.findByIdAndUpdate(
-//             id,
-//             { title, content, author, categories },
-//             { new: true }
-//         );
+    try {
+        const updatedPost = await Blog.findOneAndUpdate(
+            { id },
+            { title, content, author, categories },
+            { new: true }
+        );
 
-//         if (!updatedPost) {
-//             return res.status(404).json({ error: "Post not found" });
-//         }
+        if (!updatedPost) {
+            return res.status(404).json({ error: "Post not found" });
+        }
 
-//         // Clear cache for posts
-//         await redisClient.flushAll();
+        // Clear cache for posts
+        await redisClient.flushAll();
 
-//         return res.status(200).json({
-//             post: updatedPost,
-//             message: "Post updated successfully",
-//         });
-//     } catch (error) {
-//         console.error("Error updating post:", error);
-//         return res.status(500).json({ error: "Internal server error" });
-//     }
-// };
+        return res.status(200).json({
+            post: updatedPost,
+            message: "Post updated successfully",
+        });
+    } catch (error) {
+        console.error("Error updating post:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 // // Delete a post by ID
-// export const deletePost = async (req, res) => {
-//     const { id } = req.params;
+export const deletePost = async (req, res) => {
+    const { id } = req.params;
 
-//     try {
-//         const deletedPost = await Blog.findByIdAndDelete(id);
+    try {
+        const deletedPost = await Blog.findOneAndDelete({ id });
 
-//         if (!deletedPost) {
-//             return res.status(404).json({ error: "Post not found" });
-//         }
+        if (!deletedPost) {
+            return res.status(404).json({ error: "Post not found" });
+        }
 
-//         // Clear cache for posts
-//         await redisClient.flushAll();
+        // Clear cache for posts
+        await redisClient.flushAll();
 
-//         return res.status(200).json({
-//             post: deletedPost,
-//             message: "Post deleted successfully",
-//         });
-//     } catch (error) {
-//         console.error("Error deleting post:", error);
-//         return res.status(500).json({ error: "Internal server error" });
-//     }
-// };
+        return res.status(200).json({
+            post: deletedPost,
+            message: "Post deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
