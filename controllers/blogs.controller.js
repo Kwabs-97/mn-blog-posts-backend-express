@@ -71,7 +71,7 @@ export const getPosts = async (req, res) => {
 // Get a specific post 
 export const getPost = async (req, res) => {
     const { id } = req.params;
-    console.log(id)
+ 
     const cacheKey = `post:${id}`
     try {
         const cachedData = await redisClient.get(cacheKey);
@@ -103,7 +103,7 @@ export const createPost = async (req, res) => {
         // Clear cache for posts
         await redisClient.flushAll();
 
-        console.log(savedPost)
+  
 
         return res.status(201).json({
             post: savedPost,
